@@ -1,18 +1,32 @@
 # -*- coding: utf-8 -*-
 
+from bson import ObjectId
 from mongoengine import register_connection
 from flask_login import AnonymousUserMixin
+from flask.json import JSONEncoder
 from flask import Flask
 
 from .config import Config
 from .extensions import bcrypt, login_manager
 from .auth import auth
+from .note import note
 from .models import User
+
+
+class CustomJSONEncoder(JSONEncoder):
+
+    def default(self, obj):
+
+        if isinstance(obj, ObjectId):
+            return str(obj)
+
+        return JSONEncoder.default(self, obj)
 
 
 def create_app():
 
     app = Flask(Config.PROJECT)
+    app.json_encoder = CustomJSONEncoder
 
     config_app(app)
     config_database(app)
@@ -54,3 +68,4 @@ def config_extensions(app):
 def config_blueprint(app):
 
     app.register_blueprint(auth)
+    app.register_blueprint(note)
