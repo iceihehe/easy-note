@@ -3,11 +3,12 @@
 import datetime
 
 from mongoengine import DynamicDocument, StringField, BooleanField, DateTimeField
+from flask_login import UserMixin
 
 from .extensions import bcrypt
 
 
-class User(DynamicDocument):
+class User(DynamicDocument, UserMixin):
     """用户"""
 
     username = StringField(unique=True)
