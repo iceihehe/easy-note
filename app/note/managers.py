@@ -58,7 +58,7 @@ class NoteManager(object):
         """获取笔记本和笔记"""
 
         result = Notebook._get_collection().aggregate([
-            {'$match': {'user_id': current_user.id}},
+            {'$match': {'user_id': current_user.id, 'is_deleted': False}},
             {
                 '$lookup': {
                     'from': Note._get_collection().name,
@@ -72,6 +72,14 @@ class NoteManager(object):
                     'path': '$notes',
                     'preserveNullAndEmptyArrays': True,
                 },
+            },
+            {
+                '$match': {
+                    '$or': [
+                        {'notes.is_deleted': False, 'notes.is_trash': False},
+                        {'notes': None},
+                    ],
+                }
             },
         ])
 
