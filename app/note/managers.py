@@ -4,7 +4,7 @@ from bson import ObjectId
 
 from flask_login import current_user
 
-from ..models import Notebook
+from ..models import Notebook, Note
 from ..constants import Code
 
 
@@ -16,10 +16,10 @@ class NotebookManager(object):
 
         if parent_notebook_id is not None:
             try:
-                parent_notebook = Notebook.objects.get(id=parent_notebook_id)
+                Notebook.objects.get(id=parent_notebook_id)
             except:
                 # TODO 日志
-                return Code.NO_SUCH_PARENT_NOTEBOOK
+                return Code.NO_SUCH_NOTEBOOK
 
             parent_notebook_id = ObjectId(parent_notebook_id)
 
@@ -30,3 +30,25 @@ class NotebookManager(object):
             parent_notebook_id=parent_notebook_id,
         ).save()
         return notebook
+
+
+class NoteManager(object):
+
+    @classmethod
+    def add_note(cls, notebook_id, title, **kwargs):
+        """添加笔记"""
+
+        try:
+            notebook = Notebook.objects.get(id=notebook_id)
+        except:
+            # TODO 日志
+            return Code.NO_SUCH_NOTEBOOK
+
+        note = Note(
+            title=title,
+            user_id=current_user.id,
+            notebook_id=notebook.id,
+        ).save()
+        notebook.update(inc__number_notes=1)
+
+        return note

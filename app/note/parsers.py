@@ -15,3 +15,7 @@ update_notebook_parser.add_argument('title', type=str, location='json', required
 
 delete_notebook_parser = reqparse.RequestParser()
 delete_notebook_parser.add_argument('notebook_id', type=objectid, location='args')
+
+add_note_parser = reqparse.RequestParser()
+add_note_parser.add_argument('title', type=str, location='json', required=True)
+add_note_parser.add_argument('notebook_id', type=objectid, location='json', required=True)
