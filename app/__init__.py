@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from mongoengine import register_connection
+from flask_login import AnonymousUserMixin
 from flask import Flask
 
 from .config import Config
-from .extensions import bcrypt
+from .extensions import bcrypt, login_manager
+from .auth import auth
+from .models import User
 
 
 def create_app():
@@ -14,6 +17,7 @@ def create_app():
     config_app(app)
     config_database(app)
     config_extensions(app)
+    config_blueprint(app)
 
     return app
 
@@ -31,3 +35,22 @@ def config_database(app):
 def config_extensions(app):
 
     bcrypt.init_app(app)
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        try:
+            return User.objects.get(id=user_id)
+        except:
+            # TODO 日志
+            return AnonymousUserMixin()
+
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        # TODO
+        pass
+
+
+def config_blueprint(app):
+
+    app.register_blueprint(auth)
