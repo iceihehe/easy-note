@@ -2,7 +2,7 @@
 
 import datetime
 
-from mongoengine import DynamicDocument, StringField, BooleanField, DateTimeField
+from mongoengine import DynamicDocument, StringField, BooleanField, DateTimeField, ObjectIdField, IntField, ListField
 from flask_login import UserMixin
 
 from .extensions import bcrypt
@@ -41,3 +41,47 @@ class User(DynamicDocument, UserMixin):
             password = password.encode()
 
         return bcrypt.generate_password_hash(password).decode()
+
+
+class Notebook(DynamicDocument):
+    """笔记本"""
+
+    title = StringField()
+    number_notes = IntField()
+
+    user_id = ObjectIdField()
+    parent_notebook_id = ObjectIdField()
+
+    create_time = DateTimeField(default=datetime.datetime.now)
+    last_update = DateTimeField()
+
+    is_delete = BooleanField(default=False)
+
+    meta = {
+        'db_alias': 'default',
+        'collection': 'notebooks',
+        'index_background': True,
+    }
+
+
+class Note(DynamicDocument):
+    """笔记"""
+
+    title = StringField()
+    tags = ListField()
+    desc = StringField()
+
+    user_id = ObjectIdField()
+    notebook_id = ObjectIdField()
+
+    create_time = DateTimeField(default=datetime.datetime.now)
+    last_update = DateTimeField()
+
+    is_trash = BooleanField(default=False)
+    is_delete = BooleanField(default=False)
+
+    meta = {
+        'db_alias': 'default',
+        'collection': 'notes',
+        'index_background': True,
+    }
