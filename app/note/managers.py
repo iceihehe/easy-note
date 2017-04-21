@@ -52,3 +52,27 @@ class NoteManager(object):
         notebook.update(inc__number_notes=1)
 
         return note
+
+    @classmethod
+    def get_notes(cls):
+        """获取笔记本和笔记"""
+
+        result = Notebook._get_collection().aggregate([
+            {'$match': {'user_id': current_user.id}},
+            {
+                '$lookup': {
+                    'from': Note._get_collection().name,
+                    'localField': '_id',
+                    'foreignField': 'notebook_id',
+                    'as': 'notes',
+                },
+            },
+            {
+                '$unwind': {
+                    'path': '$notes',
+                    'preserveNullAndEmptyArrays': True,
+                },
+            },
+        ])
+
+        return list(result)

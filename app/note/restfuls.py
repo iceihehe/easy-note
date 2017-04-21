@@ -45,3 +45,14 @@ class AddNoteResource(Resource):
         return make_response({
             'note_id': result.id,
         })
+
+
+class ListNotesResource(Resource):
+
+    @login_required
+    def get(self):
+        """获取笔记本和笔记"""
+
+        result = NoteManager.get_notes()
+
+        return make_response({'result': result})

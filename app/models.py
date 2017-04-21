@@ -17,7 +17,7 @@ class User(DynamicDocument, UserMixin):
     create_time = DateTimeField(default=datetime.datetime.now)
     last_login = DateTimeField()
 
-    is_delete = BooleanField(default=False)
+    is_deleted = BooleanField(default=False)
 
     meta = {
         'db_alias': 'default',
@@ -55,7 +55,7 @@ class Notebook(DynamicDocument):
     create_time = DateTimeField(default=datetime.datetime.now)
     last_update = DateTimeField()
 
-    is_delete = BooleanField(default=False)
+    is_deleted = BooleanField(default=False)
 
     meta = {
         'db_alias': 'default',
@@ -78,7 +78,7 @@ class Note(DynamicDocument):
     last_update = DateTimeField()
 
     is_trash = BooleanField(default=False)
-    is_delete = BooleanField(default=False)
+    is_deleted = BooleanField(default=False)
 
     meta = {
         'db_alias': 'default',
