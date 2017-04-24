@@ -82,5 +82,33 @@ class NoteManager(object):
                 }
             },
         ])
+        result = list(result)
+        result_map = {}
 
-        return list(result)
+        def _parent(i):
+            i['sub'] = []
+            result_map[str(i['_id'])] = i
+
+        list(map(_parent, result))
+        need_delete = {}
+
+        def _sub(i):
+            key = i[0]
+            value = i[1]
+
+            if value.get('parent_notebook_id'):
+                result_map[str(value['parent_notebook_id'])]['sub'].append(value)
+                need_delete[key] = True
+
+        list(map(_sub, result_map.items()))
+        final = []
+
+        def _delete(i):
+            key = i[0]
+            value = i[1]
+            if not need_delete.get(key):
+                final.append(value)
+
+        list(map(_delete, result_map.items()))
+
+        return final
