@@ -6,7 +6,7 @@ from flask_login import login_required
 from .parsers import (
         add_notebook_parser, add_note_parser, update_notebook_parser,
         delete_notebook_parser, list_notes_parser, update_note_parser,
-        delete_notes_parser
+        delete_note_parser, get_note_parser
     )
 from .managers import NotebookManager, NoteManager
 from ..functions import make_response
@@ -62,7 +62,7 @@ class ListNotesResource(Resource):
         req = list_notes_parser.parse_args(strict=True)
         notebook_id = req['notebook_id']
 
-        result = NoteManager.get_notes(notebook_id)
+        result = NoteManager.list_notes(notebook_id)
 
         if isinstance(result, int):
             return make_response(code=result)
@@ -123,10 +123,28 @@ class DeleteNoteResource(Resource):
     def post(self):
         """删除笔记"""
 
-        req = delete_notes_parser.parse_args(strict=True)
+        req = delete_note_parser.parse_args(strict=True)
 
         note_id = req['note_id']
 
         result = NoteManager.delete_note(note_id)
 
         return make_response(code=result)
+
+
+class GetNoteResource(Resource):
+
+    @login_required
+    def get(self):
+        """获取笔记"""
+
+        req = get_note_parser.parse_args(strict=True)
+
+        note_id = req['note_id']
+
+        result = NoteManager.get_note(note_id)
+
+        if isinstance(result, int):
+            return make_response(code=result)
+
+        return make_response(result)

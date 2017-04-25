@@ -94,3 +94,15 @@ class Note(DynamicDocument):
         'collection': 'notes',
         'index_background': True,
     }
+
+
+class History(DynamicDocument):
+    """访问记录"""
+
+    notebook_id = ObjectIdField()
+    notebook_title = StringField()
+    note_id = ObjectIdField()
+    note_title = StringField()
+
+    user_id = ObjectIdField()
+    create_time = DateTimeField(default=datetime.datetime.now)

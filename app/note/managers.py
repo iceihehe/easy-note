@@ -78,68 +78,68 @@ class NoteManager(object):
 
         return note
 
+    # @classmethod
+    # def old_get_notes(cls):
+    #     """获取笔记本和笔记"""
+
+    #     result = Notebook._get_collection().aggregate([
+    #         {'$match': {'user_id': current_user.id, 'is_deleted': False}},
+    #         {
+    #             '$lookup': {
+    #                 'from': Note._get_collection().name,
+    #                 'localField': '_id',
+    #                 'foreignField': 'notebook_id',
+    #                 'as': 'notes',
+    #             },
+    #         },
+    #         {
+    #             '$unwind': {
+    #                 'path': '$notes',
+    #                 'preserveNullAndEmptyArrays': True,
+    #             },
+    #         },
+    #         {
+    #             '$match': {
+    #                 '$or': [
+    #                     {'notes.is_deleted': False, 'notes.is_trash': False},
+    #                     {'notes': None},
+    #                 ],
+    #             }
+    #         },
+    #     ])
+    #     result = list(result)
+    #     result_map = {}
+
+    #     def _parent(i):
+    #         i['sub'] = []
+    #         result_map[str(i['_id'])] = i
+
+    #     list(map(_parent, result))
+    #     need_delete = {}
+
+    #     def _sub(i):
+    #         key = i[0]
+    #         value = i[1]
+
+    #         if value.get('parent_notebook_id'):
+    #             result_map[str(value['parent_notebook_id'])]['sub'].append(value)
+    #             need_delete[key] = True
+
+    #     list(map(_sub, result_map.items()))
+    #     final = []
+
+    #     def _delete(i):
+    #         key = i[0]
+    #         value = i[1]
+    #         if not need_delete.get(key):
+    #             final.append(value)
+
+    #     list(map(_delete, result_map.items()))
+
+    #     return final
+
     @classmethod
-    def old_get_notes(cls):
-        """获取笔记本和笔记"""
-
-        result = Notebook._get_collection().aggregate([
-            {'$match': {'user_id': current_user.id, 'is_deleted': False}},
-            {
-                '$lookup': {
-                    'from': Note._get_collection().name,
-                    'localField': '_id',
-                    'foreignField': 'notebook_id',
-                    'as': 'notes',
-                },
-            },
-            {
-                '$unwind': {
-                    'path': '$notes',
-                    'preserveNullAndEmptyArrays': True,
-                },
-            },
-            {
-                '$match': {
-                    '$or': [
-                        {'notes.is_deleted': False, 'notes.is_trash': False},
-                        {'notes': None},
-                    ],
-                }
-            },
-        ])
-        result = list(result)
-        result_map = {}
-
-        def _parent(i):
-            i['sub'] = []
-            result_map[str(i['_id'])] = i
-
-        list(map(_parent, result))
-        need_delete = {}
-
-        def _sub(i):
-            key = i[0]
-            value = i[1]
-
-            if value.get('parent_notebook_id'):
-                result_map[str(value['parent_notebook_id'])]['sub'].append(value)
-                need_delete[key] = True
-
-        list(map(_sub, result_map.items()))
-        final = []
-
-        def _delete(i):
-            key = i[0]
-            value = i[1]
-            if not need_delete.get(key):
-                final.append(value)
-
-        list(map(_delete, result_map.items()))
-
-        return final
-
-    @classmethod
-    def get_notes(cls, notebook_id):
+    def list_notes(cls, notebook_id):
         """获取某笔记本的笔记"""
 
         try:
@@ -191,9 +191,38 @@ class NoteManager(object):
             # TODO 日志
             return Code.NO_SUCH_NOTE
 
+        try:
+            notebook = Notebook.objects.get(id=note.notebook_id)
+        except:
+            # TODO 日志
+            return Code.NO_SUCH_NOTEBOOK
+
         if note.is_trash:
             note.update(set__is_deleted=True, set__last_update=now)
         else:
             note.update(set__is_trash=True, set__last_update=now)
 
+        notebook.update(inc__number_notes=-1, set__last_update=now)
+
         return Code.SUCCESS
+
+    @classmethod
+    def get_note(cls, note_id):
+        """获取笔记"""
+
+        try:
+            note = Note.objects.get(id=note_id)
+        except:
+            # TODO 日志
+            return Code.NO_SUCH_NOTE
+
+        def _detail(n):
+            res = {
+                'title': n.title,
+                'desc': n.desc,
+                'tags': n.tags,
+                'note_id': n.id,
+            }
+            return res
+
+        return _detail(note)

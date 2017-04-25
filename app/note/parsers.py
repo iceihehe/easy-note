@@ -31,5 +31,8 @@ update_note_parser.add_argument('title', type=str, location='json')
 update_note_parser.add_argument('desc', type=str, location='json')
 update_note_parser.add_argument('tags', type=str, location='json')
 
-delete_notes_parser = reqparse.RequestParser()
-delete_notes_parser.add_argument('note_id', type=objectid, location='json', required=True)
+delete_note_parser = reqparse.RequestParser()
+delete_note_parser.add_argument('note_id', type=objectid, location='json', required=True)
+
+get_note_parser = reqparse.RequestParser()
+get_note_parser.add_argument('note_id', type=objectid, location='args', required=True)
