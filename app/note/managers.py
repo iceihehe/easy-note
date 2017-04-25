@@ -31,6 +31,34 @@ class NotebookManager(object):
         ).save()
         return notebook
 
+    @classmethod
+    def update_notebook(cls, title, notebook_id):
+        """修改笔记本"""
+
+        try:
+            result = Notebook.objects(id=notebook_id).update(set__title=title)
+        except:
+            # TODO 日志
+            return Code.NO_SUCH_NOTEBOOK
+        if result == 0:
+            return Code.NO_SUCH_NOTEBOOK
+
+        return Code.SUCCESS
+
+    @classmethod
+    def delete_notebook(cls, notebook_id):
+        """删除笔记本"""
+
+        try:
+            result = Notebook.objects(id=notebook_id).update(set__is_deleted=True)
+        except:
+            # TODO 日志
+            return Code.NO_SUCH_NOTEBOOK
+        if result == 0:
+            return Code.NO_SUCH_NOTEBOOK
+
+        return Code.SUCCESS
+
 
 class NoteManager(object):
 
@@ -54,7 +82,7 @@ class NoteManager(object):
         return note
 
     @classmethod
-    def get_notes(cls):
+    def old_get_notes(cls):
         """获取笔记本和笔记"""
 
         result = Notebook._get_collection().aggregate([
@@ -112,3 +140,9 @@ class NoteManager(object):
         list(map(_delete, result_map.items()))
 
         return final
+
+    @classmethod
+    def get_notes(cls):
+        """获取笔记本和笔记"""
+
+        return []
