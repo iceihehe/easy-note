@@ -3,8 +3,11 @@
 from flask_restful import Resource
 from flask_login import login_required
 
-from .parsers import (add_notebook_parser, add_note_parser, update_notebook_parser,
-                    delete_notebook_parser, list_notes_parser, update_note_parser)
+from .parsers import (
+        add_notebook_parser, add_note_parser, update_notebook_parser,
+        delete_notebook_parser, list_notes_parser, update_note_parser,
+        delete_notes_parser
+    )
 from .managers import NotebookManager, NoteManager
 from ..functions import make_response
 
@@ -24,8 +27,8 @@ class AddNotebookResource(Resource):
             return make_response(code=result)
 
         return make_response({
-            'notebook_id': result.id,
-        })
+                'notebook_id': result.id,
+            })
 
 
 class AddNoteResource(Resource):
@@ -46,8 +49,8 @@ class AddNoteResource(Resource):
             return make_response(code=result)
 
         return make_response({
-            'note_id': result.id,
-        })
+                'note_id': result.id,
+            })
 
 
 class ListNotesResource(Resource):
@@ -113,3 +116,17 @@ class UpdateNoteResource(Resource):
 
         return make_response(code=result)
 
+
+class DeleteNoteResource(Resource):
+
+    @login_required
+    def post(self):
+        """删除笔记"""
+
+        req = delete_notes_parser.parse_args(strict=True)
+
+        note_id = req['note_id']
+
+        result = NoteManager.delete_note(note_id)
+
+        return make_response(code=result)

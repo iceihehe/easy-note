@@ -178,3 +178,22 @@ class NoteManager(object):
             return Code.NO_SUCH_NOTE
 
         return Code.SUCCESS
+
+    @classmethod
+    def delete_note(cls, note_id):
+        """删除笔记本"""
+
+        now = datetime.datetime.now()
+
+        try:
+            note = Note.objects.get(id=note_id)
+        except:
+            # TODO 日志
+            return Code.NO_SUCH_NOTE
+
+        if note.is_trash:
+            note.update(set__is_deleted=True, set__last_update=now)
+        else:
+            note.update(set__is_trash=True, set__last_update=now)
+
+        return Code.SUCCESS

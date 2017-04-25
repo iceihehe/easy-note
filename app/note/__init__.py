@@ -3,8 +3,11 @@
 from flask_restful import Api
 from flask import Blueprint
 
-from .restfuls import (AddNotebookResource, AddNoteResource, ListNotesResource,
-                    UpdateNotebookResource, DeleteNotebookResource, UpdateNoteResource)
+from .restfuls import (
+        AddNotebookResource, AddNoteResource, ListNotesResource,
+        UpdateNotebookResource, DeleteNotebookResource, UpdateNoteResource,
+        DeleteNoteResource
+    )
 
 
 note = Blueprint('note', __name__)
@@ -17,3 +20,4 @@ note_wrap.add_resource(DeleteNotebookResource, '/api/notebook/delete_notebook/')
 note_wrap.add_resource(ListNotesResource, '/api/note/list_notes/')
 note_wrap.add_resource(AddNoteResource, '/api/notebook/add_note/')
 note_wrap.add_resource(UpdateNoteResource, '/api/note/update_note/')
+note_wrap.add_resource(DeleteNoteResource, '/api/note/delete_note/')
