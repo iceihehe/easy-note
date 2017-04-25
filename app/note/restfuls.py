@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask_restful import Resource
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 from .parsers import (
         add_notebook_parser, add_note_parser, update_notebook_parser,
@@ -142,7 +142,7 @@ class GetNoteResource(Resource):
 
         note_id = req['note_id']
 
-        result = NoteManager.get_note(note_id)
+        result = NoteManager.get_note(note_id, current_user)
 
         if isinstance(result, int):
             return make_response(code=result)

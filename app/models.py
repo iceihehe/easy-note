@@ -100,7 +100,6 @@ class History(DynamicDocument):
     """访问记录"""
 
     notebook_id = ObjectIdField()
-    notebook_title = StringField()
     note_id = ObjectIdField()
     note_title = StringField()
 

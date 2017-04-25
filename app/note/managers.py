@@ -7,6 +7,7 @@ from flask_login import current_user
 
 from ..models import Notebook, Note
 from ..constants import Code
+from ..functions import add_history
 
 
 class NotebookManager(object):
@@ -207,7 +208,7 @@ class NoteManager(object):
         return Code.SUCCESS
 
     @classmethod
-    def get_note(cls, note_id):
+    def get_note(cls, note_id, user=None):
         """获取笔记"""
 
         try:
@@ -224,5 +225,9 @@ class NoteManager(object):
                 'note_id': n.id,
             }
             return res
+
+        if user:
+            # 记录
+            add_history(note.id, note.title, note.notebook_id, user)
 
         return _detail(note)
