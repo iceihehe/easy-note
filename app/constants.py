@@ -8,10 +8,12 @@ class Code:
     USERNAME_OR_PASSWORD_ERROR = 10001
     NO_SUCH_NOTEBOOK = 10002
     NO_SUCH_NOTE = 10003
+    NO_SUCH_USER = 10004
 
     MSG = {
         SUCCESS: '成功',
         USERNAME_OR_PASSWORD_ERROR: '账号或密码错误',
         NO_SUCH_NOTEBOOK: '该笔记本不存在',
         NO_SUCH_NOTE: '该笔记不存在',
+        NO_SUCH_USER: '该用户不存在',
     }

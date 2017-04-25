@@ -14,6 +14,14 @@ class User(DynamicDocument, UserMixin):
     username = StringField(unique=True)
     password = StringField()
 
+    nickname = StringField()
+    # 0/1/2 未知/男/女
+    gender = IntField()
+    # 个性签名
+    remark = StringField()
+    # 头像 是个链接
+    avatar = StringField()
+
     create_time = DateTimeField(default=datetime.datetime.now)
     last_login = DateTimeField()
 
