@@ -12,6 +12,7 @@ from .config import Config
 from .extensions import bcrypt, login_manager
 from .auth import auth
 from .note import note
+from .ueditor import ueditor
 from .models import User
 
 
@@ -74,3 +75,4 @@ def config_blueprint(app):
 
     app.register_blueprint(auth)
     app.register_blueprint(note)
+    app.register_blueprint(ueditor)
