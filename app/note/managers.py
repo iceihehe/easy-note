@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from bson import ObjectId
+import datetime
 
+from bson import ObjectId
 from flask_login import current_user
 
 from ..models import Notebook, Note
@@ -57,7 +58,7 @@ class NotebookManager(object):
 class NoteManager(object):
 
     @classmethod
-    def add_note(cls, notebook_id, title, **kwargs):
+    def add_note(cls, notebook_id, title, desc, tags):
         """添加笔记"""
 
         try:
@@ -70,6 +71,8 @@ class NoteManager(object):
             title=title,
             user_id=current_user.id,
             notebook_id=notebook.id,
+            desc=desc,
+            tags=tags,
         ).save()
         notebook.update(inc__number_notes=1)
 
@@ -157,3 +160,21 @@ class NoteManager(object):
             return res
 
         return [_detail(i) for i in notes]
+
+    @classmethod
+    def update_note(cls, note_id, title, desc, tags):
+        """修改笔记"""
+
+        now = datetime.datetime.now()
+
+        result = Note.objects(id=note_id).update(
+            set__title=title,
+            set__desc=desc,
+            set__tags=tags,
+            set__last_update=now, 
+        )
+
+        if result == 0:
+            return Code.NO_SUCH_NOTE
+
+        return Code.SUCCESS

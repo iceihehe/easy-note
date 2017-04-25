@@ -4,7 +4,7 @@ from flask_restful import Resource
 from flask_login import login_required
 
 from .parsers import (add_notebook_parser, add_note_parser, update_notebook_parser,
-                    delete_notebook_parser, list_notes_parser)
+                    delete_notebook_parser, list_notes_parser, update_note_parser)
 from .managers import NotebookManager, NoteManager
 from ..functions import make_response
 
@@ -37,8 +37,10 @@ class AddNoteResource(Resource):
         req = add_note_parser.parse_args()
         title = req['title']
         notebook_id = req['notebook_id']
+        desc = req['desc']
+        tags = req['tags']
 
-        result = NoteManager.add_note(notebook_id, title)
+        result = NoteManager.add_note(notebook_id, title, desc, tags)
 
         if isinstance(result, int):
             return make_response(code=result)
@@ -92,3 +94,22 @@ class DeleteNotebookResource(Resource):
         result = NotebookManager.delete_notebook(notebook_id)
 
         return make_response(code=result)
+
+
+class UpdateNoteResource(Resource):
+
+    @login_required
+    def post(self):
+        """修改笔记"""
+
+        req = update_note_parser.parse_args(strict=True)
+
+        note_id = req['note_id']
+        title = req['title']
+        desc = req['desc']
+        tags = req['tags']
+
+        result = NoteManager.update_note(note_id, title, desc, tags)
+
+        return make_response(code=result)
+

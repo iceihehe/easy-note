@@ -2,7 +2,7 @@
 
 import datetime
 
-from mongoengine import DynamicDocument, StringField, BooleanField, DateTimeField, ObjectIdField, IntField, ListField
+from mongoengine import DynamicDocument, StringField, BooleanField, DateTimeField, ObjectIdField, IntField
 from flask_login import UserMixin
 
 from .extensions import bcrypt
@@ -68,7 +68,8 @@ class Note(DynamicDocument):
     """笔记"""
 
     title = StringField()
-    tags = ListField()
+    # 标签，用英文逗号隔离
+    tags = StringField()
     desc = StringField()
 
     user_id = ObjectIdField()

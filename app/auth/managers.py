@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import datetime
+
 from ..models import User
 
 class AuthManager(object):
@@ -14,6 +16,8 @@ class AuthManager(object):
             return
 
         if user.check_password(password):
+            now = datetime.datetime.now()
+            user.update(set__last_login=now)
             return user
         else:
             # TODO 日志
