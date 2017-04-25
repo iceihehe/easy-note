@@ -3,7 +3,8 @@
 from flask_restful import Resource
 from flask_login import login_required
 
-from .parsers import add_notebook_parser, add_note_parser, update_notebook_parser, delete_notebook_parser
+from .parsers import (add_notebook_parser, add_note_parser, update_notebook_parser,
+                    delete_notebook_parser, list_notes_parser)
 from .managers import NotebookManager, NoteManager
 from ..functions import make_response
 
@@ -51,9 +52,15 @@ class ListNotesResource(Resource):
 
     @login_required
     def get(self):
-        """获取笔记本和笔记"""
+        """获取某笔记本的笔记"""
 
-        result = NoteManager.get_notes()
+        req = list_notes_parser.parse_args(strict=True)
+        notebook_id = req['notebook_id']
+
+        result = NoteManager.get_notes(notebook_id)
+
+        if isinstance(result, int):
+            return make_response(code=result)
 
         return make_response({'result': result})
 

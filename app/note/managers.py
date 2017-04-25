@@ -35,11 +35,8 @@ class NotebookManager(object):
     def update_notebook(cls, title, notebook_id):
         """修改笔记本"""
 
-        try:
-            result = Notebook.objects(id=notebook_id).update(set__title=title)
-        except:
-            # TODO 日志
-            return Code.NO_SUCH_NOTEBOOK
+        result = Notebook.objects(id=notebook_id).update(set__title=title)
+
         if result == 0:
             return Code.NO_SUCH_NOTEBOOK
 
@@ -49,11 +46,8 @@ class NotebookManager(object):
     def delete_notebook(cls, notebook_id):
         """删除笔记本"""
 
-        try:
-            result = Notebook.objects(id=notebook_id).update(set__is_deleted=True)
-        except:
-            # TODO 日志
-            return Code.NO_SUCH_NOTEBOOK
+        result = Notebook.objects(id=notebook_id).update(set__is_deleted=True)
+
         if result == 0:
             return Code.NO_SUCH_NOTEBOOK
 
@@ -142,7 +136,24 @@ class NoteManager(object):
         return final
 
     @classmethod
-    def get_notes(cls):
-        """获取笔记本和笔记"""
+    def get_notes(cls, notebook_id):
+        """获取某笔记本的笔记"""
 
-        return []
+        try:
+            Notebook.objects.get(id=notebook_id)
+        except:
+            # TODO 日志
+            return Code.NO_SUCH_NOTEBOOK
+
+        notes = Note.objects(notebook_id=notebook_id, is_deleted=False, is_trash=False).all()
+
+        def _detail(note):
+            res = {
+                'note_id': note.id,
+                'title': note.title,
+                'create_time': note.create_time,
+                'last_update': note.last_update,
+            }
+            return res
+
+        return [_detail(i) for i in notes]

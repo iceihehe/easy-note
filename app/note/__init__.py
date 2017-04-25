@@ -12,6 +12,7 @@ note_wrap = Api(note)
 
 note_wrap.add_resource(AddNotebookResource, '/api/notebook/add_notebook/')
 note_wrap.add_resource(AddNoteResource, '/api/notebook/add_note/')
-note_wrap.add_resource(ListNotesResource, '/api/notebook/list_notes/')
 note_wrap.add_resource(UpdateNotebookResource, '/api/notebook/update_notebook/')
 note_wrap.add_resource(DeleteNotebookResource, '/api/notebook/delete_notebook/')
+
+note_wrap.add_resource(ListNotesResource, '/api/note/list_notes/')

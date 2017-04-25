@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import datetime
+
 from bson import ObjectId
 from mongoengine import register_connection
 from flask_login import AnonymousUserMixin
@@ -19,6 +21,9 @@ class CustomJSONEncoder(JSONEncoder):
 
         if isinstance(obj, ObjectId):
             return str(obj)
+
+        if isinstance(obj, datetime.datetime):
+            return int(obj.strftime('%s'))
 
         return JSONEncoder.default(self, obj)
 
