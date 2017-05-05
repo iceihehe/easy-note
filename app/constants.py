@@ -10,6 +10,7 @@ class Code:
     NO_SUCH_NOTE = 10003
     NO_SUCH_USER = 10004
     NO_UPFILE = 10005
+    NOT_SUPPORTED_FORMAT = 10006
 
     MSG = {
         SUCCESS: '成功',
@@ -18,4 +19,5 @@ class Code:
         NO_SUCH_NOTE: '该笔记不存在',
         NO_SUCH_USER: '该用户不存在',
         NO_UPFILE: '没有上传文件',
+        NOT_SUPPORTED_FORMAT: '不支持的文件格式',
     }

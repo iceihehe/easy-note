@@ -24,17 +24,16 @@ class UeditorView(MethodView):
                 return {
                         'state': '没收到文件',
                     }
+
             url = upload_file_to_qiniu(upfile.stream.read())
 
-            res = {
-                'state': 'SUCCESS',
-                'url': url,
-                'title': upfile.filename,
-                'original': upfile.filename,
-            }
+            return jsonify({
+                    'state': 'SUCCESS',
+                    'url': url,
+                    'title': upfile.filename,
+                    'original': upfile.filename,
+                })
 
-            return jsonify(res)
-
-        return {
+        return jsonify({
                 'state': '还不支持该ueditor组件',
-            }
+            })

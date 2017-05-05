@@ -16,6 +16,9 @@ class UploadView(MethodView):
         if upfile is None:
             return make_response(code=Code.NO_UPFILE)
 
+        if upfile.content_type not in ['image/png', 'image/jpeg']:
+            return make_response(code=Code.NOT_SUPPORTED_FORMAT)
+
         url = upload_file_to_qiniu(upfile.stream.read())
         return make_response({
                 'url': url,
