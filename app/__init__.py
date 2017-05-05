@@ -13,6 +13,8 @@ from .extensions import bcrypt, login_manager
 from .auth import auth
 from .note import note
 from .ueditor import ueditor
+from .upload import upload
+from .front import front
 from .models import User
 
 
@@ -32,6 +34,8 @@ class CustomJSONEncoder(JSONEncoder):
 def create_app():
 
     app = Flask(Config.PROJECT)
+    app.template_folder = 'templates'
+    app.static_folder = 'static'
     app.json_encoder = CustomJSONEncoder
 
     config_app(app)
@@ -76,3 +80,5 @@ def config_blueprint(app):
     app.register_blueprint(auth)
     app.register_blueprint(note)
     app.register_blueprint(ueditor)
+    app.register_blueprint(front)
+    app.register_blueprint(upload)

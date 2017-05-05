@@ -20,6 +20,10 @@ class UeditorView(MethodView):
 
         if action in ['uploadimage']:
             upfile = request.files.get('upfile')
+            if upfile is None:
+                return {
+                        'state': '没收到文件',
+                    }
             url = upload_file_to_qiniu(upfile.stream.read())
 
             res = {
@@ -32,5 +36,5 @@ class UeditorView(MethodView):
             return jsonify(res)
 
         return {
-                'state': '类型不支持',
+                'state': '还不支持该ueditor组件',
             }
