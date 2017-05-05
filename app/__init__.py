@@ -8,8 +8,10 @@ from flask_login import AnonymousUserMixin
 from flask.json import JSONEncoder
 from flask import Flask
 
+from .constants import Code
 from .config import Config
 from .extensions import bcrypt, login_manager
+from .functions import make_response
 from .auth import auth
 from .note import note
 from .ueditor import ueditor
@@ -34,8 +36,8 @@ class CustomJSONEncoder(JSONEncoder):
 def create_app():
 
     app = Flask(Config.PROJECT)
-    app.template_folder = 'templates'
-    app.static_folder = 'static'
+    app.template_folder = 'build'
+    app.static_folder = 'build'
     app.json_encoder = CustomJSONEncoder
 
     config_app(app)
@@ -72,7 +74,7 @@ def config_extensions(app):
     @login_manager.unauthorized_handler
     def unauthorized():
         # TODO
-        pass
+        return make_response(code=Code.LOGIN_REQUIRED)
 
 
 def config_blueprint(app):

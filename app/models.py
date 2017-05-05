@@ -80,6 +80,10 @@ class Note(DynamicDocument):
     tags = StringField()
     desc = StringField()
 
+    # 是否需要密码
+    need_password = BooleanField(default=False)
+    password = StringField()
+
     user_id = ObjectIdField()
     notebook_id = ObjectIdField()
 
@@ -94,6 +98,15 @@ class Note(DynamicDocument):
         'collection': 'notes',
         'index_background': True,
     }
+
+    @staticmethod
+    def gen_password(password):
+        """生成密码"""
+
+        if isinstance(password, str):
+            password = password.encode()
+
+        return bcrypt.generate_password_hash(password).decode()
 
 
 class History(DynamicDocument):
