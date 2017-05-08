@@ -148,3 +148,14 @@ class GetNoteResource(Resource):
             return make_response(code=result)
 
         return make_response(result)
+
+
+class ListNotebooksResource(Resource):
+
+    @login_required
+    def get(self):
+        """获取笔记本"""
+
+        result = NotebookManager.list_notebooks()
+
+        return make_response(result)

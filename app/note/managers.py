@@ -55,6 +55,66 @@ class NotebookManager(object):
 
         return Code.SUCCESS
 
+    @classmethod
+    def list_notebooks(cls):
+        """获取笔记本"""
+
+        result = Notebook._get_collection().aggregate([
+            {'$match': {'user_id': current_user.id, 'is_deleted': False}},
+            {
+                '$lookup': {
+                    'from': Note._get_collection().name,
+                    'localField': '_id',
+                    'foreignField': 'notebook_id',
+                    'as': 'notes',
+                },
+            },
+            {
+                '$unwind': {
+                    'path': '$notes',
+                    'preserveNullAndEmptyArrays': True,
+                },
+            },
+            {
+                '$match': {
+                    '$or': [
+                        {'notes.is_deleted': False, 'notes.is_trash': False},
+                        {'notes': None},
+                    ],
+                }
+            },
+        ])
+        result = list(result)
+        result_map = {}
+
+        def _parent(i):
+            i['sub'] = []
+            result_map[str(i['_id'])] = i
+
+        list(map(_parent, result))
+        need_delete = {}
+
+        def _sub(i):
+            key = i[0]
+            value = i[1]
+
+            if value.get('parent_notebook_id') and str(value.get('parent_notebook_id')) in result_map:
+                result_map[str(value['parent_notebook_id'])]['sub'].append(value)
+                need_delete[key] = True
+
+        list(map(_sub, result_map.items()))
+        final = []
+
+        def _delete(i):
+            key = i[0]
+            value = i[1]
+            if not need_delete.get(key):
+                final.append(value)
+
+        list(map(_delete, result_map.items()))
+
+        return final
+
 
 class NoteManager(object):
 
@@ -78,66 +138,6 @@ class NoteManager(object):
         notebook.update(inc__number_notes=1)
 
         return note
-
-    # @classmethod
-    # def old_get_notes(cls):
-    #     """获取笔记本和笔记"""
-
-    #     result = Notebook._get_collection().aggregate([
-    #         {'$match': {'user_id': current_user.id, 'is_deleted': False}},
-    #         {
-    #             '$lookup': {
-    #                 'from': Note._get_collection().name,
-    #                 'localField': '_id',
-    #                 'foreignField': 'notebook_id',
-    #                 'as': 'notes',
-    #             },
-    #         },
-    #         {
-    #             '$unwind': {
-    #                 'path': '$notes',
-    #                 'preserveNullAndEmptyArrays': True,
-    #             },
-    #         },
-    #         {
-    #             '$match': {
-    #                 '$or': [
-    #                     {'notes.is_deleted': False, 'notes.is_trash': False},
-    #                     {'notes': None},
-    #                 ],
-    #             }
-    #         },
-    #     ])
-    #     result = list(result)
-    #     result_map = {}
-
-    #     def _parent(i):
-    #         i['sub'] = []
-    #         result_map[str(i['_id'])] = i
-
-    #     list(map(_parent, result))
-    #     need_delete = {}
-
-    #     def _sub(i):
-    #         key = i[0]
-    #         value = i[1]
-
-    #         if value.get('parent_notebook_id'):
-    #             result_map[str(value['parent_notebook_id'])]['sub'].append(value)
-    #             need_delete[key] = True
-
-    #     list(map(_sub, result_map.items()))
-    #     final = []
-
-    #     def _delete(i):
-    #         key = i[0]
-    #         value = i[1]
-    #         if not need_delete.get(key):
-    #             final.append(value)
-
-    #     list(map(_delete, result_map.items()))
-
-    #     return final
 
     @classmethod
     def list_notes(cls, notebook_id):
