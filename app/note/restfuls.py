@@ -120,7 +120,7 @@ class UpdateNoteResource(Resource):
 class DeleteNoteResource(Resource):
 
     @login_required
-    def post(self):
+    def get(self):
         """删除笔记"""
 
         req = delete_note_parser.parse_args(strict=True)
