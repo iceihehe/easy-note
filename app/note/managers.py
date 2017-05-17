@@ -83,13 +83,21 @@ class NotebookManager(object):
                     ],
                 }
             },
+            {
+                '$project': {
+                    '_id': 0,
+                    'value': '$_id',
+                    'text': '$title',
+                    'parent_notebook_id': '$parent_notebook_id',
+                },
+            }
         ])
         result = list(result)
         result_map = {}
 
         def _parent(i):
-            i['sub'] = []
-            result_map[str(i['_id'])] = i
+            i['children'] = []
+            result_map[str(i['value'])] = i
 
         list(map(_parent, result))
         need_delete = {}
@@ -99,7 +107,7 @@ class NotebookManager(object):
             value = i[1]
 
             if value.get('parent_notebook_id') and str(value.get('parent_notebook_id')) in result_map:
-                result_map[str(value['parent_notebook_id'])]['sub'].append(value)
+                result_map[str(value['parent_notebook_id'])]['children'].append(value)
                 need_delete[key] = True
 
         list(map(_sub, result_map.items()))

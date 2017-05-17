@@ -27,7 +27,8 @@ class AddNotebookResource(Resource):
             return make_response(code=result)
 
         return make_response({
-                'notebook_id': result.id,
+                'value': result.id,
+                'text': result.title,
             })
 
 
