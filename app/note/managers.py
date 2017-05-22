@@ -130,20 +130,21 @@ class NoteManager(object):
     def add_note(cls, notebook_id, title, desc, tags):
         """添加笔记"""
 
-        try:
-            notebook = Notebook.objects.get(id=notebook_id)
-        except:
-            # TODO 日志
-            return Code.NO_SUCH_NOTEBOOK
+        if notebook_id:
+            try:
+                notebook = Notebook.objects.get(id=notebook_id)
+                notebook.update(inc__number_notes=1)
+            except:
+                # TODO 日志
+                return Code.NO_SUCH_NOTEBOOK
 
         note = Note(
             title=title,
             user_id=current_user.id,
-            notebook_id=notebook.id,
+            notebook_id=notebook_id,
             desc=desc,
             tags=tags,
         ).save()
-        notebook.update(inc__number_notes=1)
 
         return note
 
@@ -151,13 +152,17 @@ class NoteManager(object):
     def list_notes(cls, notebook_id):
         """获取某笔记本的笔记"""
 
-        try:
-            Notebook.objects.get(id=notebook_id)
-        except:
-            # TODO 日志
-            return Code.NO_SUCH_NOTEBOOK
+        match = {'is_deleted': False, 'is_trash': False, 'user_id': current_user.id}
 
-        notes = Note.objects(notebook_id=notebook_id, is_deleted=False, is_trash=False).all()
+        if notebook_id:
+            try:
+                Notebook.objects.get(id=notebook_id)
+            except:
+                # TODO 日志
+                return Code.NO_SUCH_NOTEBOOK
+            match.update({'notebook_id': notebook_id})
+
+        notes = Note.objects(__raw__=match).all()
 
         def _detail(note):
             res = {

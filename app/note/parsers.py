@@ -22,8 +22,8 @@ add_note_parser.add_argument('desc', type=str, location='json')
 add_note_parser.add_argument('tags', type=str, location='json')
 add_note_parser.add_argument('notebook_id', type=objectid, location='json', required=True)
 
-list_notes_parser= reqparse.RequestParser()
-list_notes_parser.add_argument('notebook_id', type=objectid, location='args', required=True)
+list_notes_parser = reqparse.RequestParser()
+list_notes_parser.add_argument('notebook_id', type=objectid, location='args')
 
 update_note_parser = reqparse.RequestParser()
 update_note_parser.add_argument('note_id', type=objectid, location='json', required=True)
