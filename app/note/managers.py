@@ -162,14 +162,15 @@ class NoteManager(object):
                 return Code.NO_SUCH_NOTEBOOK
             match.update({'notebook_id': notebook_id})
 
-        notes = Note.objects(__raw__=match).all()
+        notes = Note.objects(__raw__=match).order_by('-create_time').all()
 
         def _detail(note):
             res = {
-                'note_id': note.id,
+                'id': note.id,
                 'title': note.title,
-                'create_time': note.create_time,
-                'last_update': note.last_update,
+                'createTime': note.create_time,
+                # 'last_update': note.last_update,
+                'type': note.type_,
             }
             return res
 

@@ -28,7 +28,7 @@ class CustomJSONEncoder(JSONEncoder):
             return str(obj)
 
         if isinstance(obj, datetime.datetime):
-            return int(obj.strftime('%s'))
+            return obj.strftime('%Y-%m-%d')
 
         return JSONEncoder.default(self, obj)
 

@@ -93,6 +93,9 @@ class Note(DynamicDocument):
     is_trash = BooleanField(default=False)
     is_deleted = BooleanField(default=False)
 
+    # edite/markdown
+    type_ = StringField(default='/edite')
+
     meta = {
         'db_alias': 'default',
         'collection': 'notes',
