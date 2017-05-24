@@ -127,7 +127,7 @@ class NotebookManager(object):
 class NoteManager(object):
 
     @classmethod
-    def add_note(cls, notebook_id, title, desc, tags):
+    def add_note(cls, notebook_id, title, desc, tags, type_):
         """添加笔记"""
 
         if notebook_id:
@@ -144,6 +144,7 @@ class NoteManager(object):
             notebook_id=notebook_id,
             desc=desc,
             tags=tags,
+            type_=type_,
         ).save()
 
         return note

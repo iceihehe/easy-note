@@ -43,8 +43,9 @@ class AddNoteResource(Resource):
         notebook_id = req['notebook_id']
         desc = req['desc']
         tags = req['tags']
+        type_ = req['type']
 
-        result = NoteManager.add_note(notebook_id, title, desc, tags)
+        result = NoteManager.add_note(notebook_id, title, desc, tags, type_)
 
         if isinstance(result, int):
             return make_response(code=result)

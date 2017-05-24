@@ -21,6 +21,7 @@ add_note_parser.add_argument('title', type=str, location='json')
 add_note_parser.add_argument('desc', type=str, location='json')
 add_note_parser.add_argument('tags', type=str, location='json')
 add_note_parser.add_argument('notebook_id', type=objectid, location='json', required=True)
+add_note_parser.add_argument('type', type=str, location='json', required=True, default='/edite')
 
 list_notes_parser = reqparse.RequestParser()
 list_notes_parser.add_argument('notebook_id', type=objectid, location='args')
