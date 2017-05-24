@@ -6,7 +6,7 @@ from flask_login import login_required, current_user
 from .parsers import (
         add_notebook_parser, add_note_parser, update_notebook_parser,
         delete_notebook_parser, list_notes_parser, update_note_parser,
-        delete_note_parser, get_note_parser
+        delete_note_parser, get_note_parser, search_parser
     )
 from .managers import NotebookManager, NoteManager
 from ..functions import make_response
@@ -158,5 +158,19 @@ class ListNotebooksResource(Resource):
         """获取笔记本"""
 
         result = NotebookManager.list_notebooks()
+
+        return make_response(result)
+
+
+class SearchResource(Resource):
+
+    @login_required
+    def get(self):
+        """关键词筛选笔记"""
+
+        req = search_parser.parse_args()
+        keyword = req['keyword']
+
+        result = NoteManager.search_notes(keyword)
 
         return make_response(result)

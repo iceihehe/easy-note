@@ -244,3 +244,32 @@ class NoteManager(object):
             add_history(note.id, note.title, note.notebook_id, user)
 
         return _detail(note)
+
+    @classmethod
+    def search_notes(cls, keyword):
+        """
+        关键词筛选笔记
+        本来打算用es，没时间就用mongodb的搜索将就下
+        """
+
+        match = {'user_id': current_user.id}
+    
+        if keyword:
+            match.update({
+                '$or': [
+                    {'title': {'$regex': keyword}},
+                    {'desc': {'$regex': keyword}},
+                ]
+            })
+
+        def _detail(note):
+            res = {
+                'note_id': note.id,
+                'title': note.title,
+                'create_time': note.create_time,
+                'last_update': note.last_update,
+            }
+            return res
+
+        notes = Note.objects(__raw__=match).order_by('-create_time').all()
+        return [_detail(i) for i in notes]
