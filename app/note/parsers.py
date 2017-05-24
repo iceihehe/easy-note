@@ -36,3 +36,6 @@ delete_note_parser.add_argument('note_id', type=objectid, location='args', requi
 
 get_note_parser = reqparse.RequestParser()
 get_note_parser.add_argument('note_id', type=objectid, location='args', required=True)
+
+search_parser = reqparse.RequestParser()
+search_parser.add_argument('keyword', type=str, location='args', default='')

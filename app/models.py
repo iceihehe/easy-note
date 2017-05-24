@@ -121,3 +121,14 @@ class History(DynamicDocument):
 
     user_id = ObjectIdField()
     create_time = DateTimeField(default=datetime.datetime.now)
+
+
+class RecycleBin(DynamicDocument):
+    """回收站记录"""
+
+    user_id = ObjectIdField()
+    #  1/2 笔记/文件夹
+    type_ = IntField()
+    # id
+    id_ = ObjectIdField()
+    create_time = DateTimeField(default=datetime.datetime.now)

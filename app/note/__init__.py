@@ -6,7 +6,8 @@ from flask import Blueprint
 from .restfuls import (
         AddNotebookResource, AddNoteResource, ListNotesResource,
         UpdateNotebookResource, DeleteNotebookResource, UpdateNoteResource,
-        DeleteNoteResource, GetNoteResource, ListNotebooksResource
+        DeleteNoteResource, GetNoteResource, ListNotebooksResource,
+        SearchResource
     )
 
 
@@ -23,3 +24,4 @@ note_wrap.add_resource(UpdateNoteResource, '/api/note/update_note/')
 note_wrap.add_resource(DeleteNoteResource, '/api/note/delete_note/')
 note_wrap.add_resource(GetNoteResource, '/api/note/get_note/')
 note_wrap.add_resource(ListNotebooksResource, '/api/notebook/list_notebooks/')
+note_wrap.add_resource(SearchResource, '/api/note/search/')
